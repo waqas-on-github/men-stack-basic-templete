@@ -8,6 +8,7 @@ import logger from 'morgan'
 // import routers
 import { router as indexRouter } from './routes/index.js'
 import { router as usersRouter } from './routes/users.js'
+import { CustomError } from './serves/customerror.js'
 
 // create the express app
 const app = express()
@@ -34,10 +35,20 @@ app.use(function (req, res, next) {
 
 // error handler middleware 
 app.use(function (err, req, res, next) {
-  
-  
+  if(err instanceof CustomError) {
+    res.status(err.code || 500).json({
+      sucess : false , 
+      err : err
+    })
 
+    console.error(`custom error occered due to ${err.cause}` ,  err)
+  } 
 
+console.error('error occered ');
+res.status(err.code || 500).json({
+  sucess : false , 
+  err : err
+})
   // render the error page
  
 })
